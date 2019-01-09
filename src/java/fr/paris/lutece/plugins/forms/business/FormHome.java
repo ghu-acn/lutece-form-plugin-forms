@@ -137,6 +137,12 @@ public final class FormHome
     {
         return _dao.countNumberOfResponseForms( nIdFormm );
     }
+    
+    //TODOALEX
+    public static List<Form> getIndexedFormsList( )
+    {
+        return null;
+    }
 
     /**
      * count the number of response for form

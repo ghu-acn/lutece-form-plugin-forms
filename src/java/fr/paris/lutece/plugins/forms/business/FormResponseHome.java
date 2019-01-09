@@ -36,6 +36,8 @@ package fr.paris.lutece.plugins.forms.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides instances management methods (create, find, ...) for FormResponseHome objects
@@ -106,6 +108,23 @@ public final class FormResponseHome
 
         return formResponse;
     }
+    
+    /**
+     * Returns all the formResponse objects, completed with the steps
+     * @return all the formResponse objects completed with the steps
+     */
+    public static List<FormResponse> selectAllFormResponses( )
+    {
+        int i = 1 ;
+        List<FormResponse> list = new ArrayList<>();
+        FormResponse response = FormResponseHome.findByPrimaryKey(i);
+        while ( response != null ) 
+        {
+            list.add( response );
+            response = FormResponseHome.findByPrimaryKey(i+1);
+        }
+        return list;
+    }
 
     /**
      * Completes the specified form response with the steps
@@ -149,4 +168,5 @@ public final class FormResponseHome
         _dao.deleteByForm( nIdForm, _plugin );
 
     }
+    
 }
