@@ -31,49 +31,45 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.forms.business.form.filter.configuration;
+
+package fr.paris.lutece.plugins.forms.validation;
+
+import java.util.List;
+
+import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.portal.business.file.File;
 
 /**
- * Configuration for a FormFilter object
+ * 
+ * Validator to verify the pattern of a response
+ *
  */
-public class FormFilterDateCreationConfiguration implements IFormFilterConfiguration
+public class PatternFileTypeValidator extends AbstractPatternValidator
 {
-    // Variables
-    private final int _nPosition;
-    private final String _strFormFilterLabel;
 
     /**
-     * Constructor
+     * Constructor of the PatternValidator
      * 
-     * @param nPosition
-     *            The position of the FormFilter
-     * @param strFormFilterLabel
-     *            The label of the FormFilter
+     * @param strValidatorName
+     *            The validator bean name
+     * @param strValidatorDisplayName
+     *            The validator display name
+     * @param listAvailableEntryType
+     *            The list of available entrytype
      */
-    public FormFilterDateCreationConfiguration( int nPosition, String strFormFilterLabel )
+    public PatternFileTypeValidator( String strValidatorName, String strValidatorDisplayName, List<String> listAvailableEntryType )
     {
-        _nPosition = nPosition;
-        _strFormFilterLabel = strFormFilterLabel;
+        super( strValidatorName, strValidatorDisplayName, listAvailableEntryType );
     }
-
-    /**
-     * Return the position of the FormFilter
-     * 
-     * @return the position of the FormFilter
-     */
-    public int getPosition( )
+    
+    @Override
+    protected String getValueToValidate( Response response )
     {
-        return _nPosition;
+    	File file = response.getFile( );
+    	if ( file != null )
+    	{
+    		return file.getMimeType( );
+    	}
+    	return null;
     }
-
-    /**
-     * Return the label of the FormFilter
-     * 
-     * @return the label of the FormFilter
-     */
-    public String getFormFilterLabel( )
-    {
-        return _strFormFilterLabel;
-    }
-
 }

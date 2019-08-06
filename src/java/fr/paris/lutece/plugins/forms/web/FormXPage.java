@@ -116,6 +116,7 @@ public class FormXPage extends MVCApplication
     protected static final String MESSAGE_LIST_FORMS_PAGETITLE = "forms.xpage.listForms.pagetitle";
     protected static final String MESSAGE_LIST_FORMS_PATHLABEL = "forms.xpage.listForms.pathlabel";
     private static final String MESSAGE_WARNING_LOST_SESSION = "forms.warning.lost.session";
+    private static final String MESSAGE_ERROR_STEP_NOT_FINAL ="forms.error.step.isnot.final";
     /**
      * Generated serial id
      */
@@ -266,7 +267,7 @@ public class FormXPage extends MVCApplication
         {
             if ( paramInit.equals( PARAMETER_INIT ) )
             {
-                init( );
+                init( request );
             }
         }
         Map<String, Object> model = getModel( );
@@ -575,22 +576,27 @@ public class FormXPage extends MVCApplication
         {
             return redirectView( request, VIEW_STEP );
         }
-
+        
+        _currentStep = _formResponseManager.getCurrentStep( );
         if ( !_formResponseManager.validateFormResponses( ) )
         {
-            _currentStep = _formResponseManager.getCurrentStep( );
             _stepDisplayTree = new StepDisplayTree( _currentStep.getId( ), _formResponseManager.getFormResponse( ) );
-
             return redirectView( request, VIEW_STEP );
+        }
+        if( !_currentStep.isFinal( )){
+        	
+        	_stepDisplayTree = new StepDisplayTree( _currentStep.getId( ), _formResponseManager.getFormResponse( ) );
+        	addError( MESSAGE_ERROR_STEP_NOT_FINAL, request.getLocale( ) );
+        	return redirectView( request, VIEW_STEP );
         }
 
         saveFormResponse( form, request );
-        FormsAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        //FormsAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
         Map<String, Object> model = getModel( );
 
         model.put( FormsConstants.PARAMETER_ID_FORM, form.getId( ) );
 
-        init( );
+        init( request );
 
         FormMessage formMessage = FormMessageHome.findByForm( form.getId( ) );
         boolean bIsEndMessageDisplayed = formMessage.getEndMessageDisplay( );
@@ -765,11 +771,10 @@ public class FormXPage extends MVCApplication
     @Action( value = ACTION_SAVE_STEP )
     public XPage doSaveStep( HttpServletRequest request ) throws SiteMessageException, UserNotSignedException
     {
-        Form form = null;
         try
         {
             boolean bSessionLost = isSessionLost( );
-            form = findFormFrom( request );
+            findFormFrom( request );
             if ( bSessionLost )
             {
                 addWarning( MESSAGE_WARNING_LOST_SESSION, request.getLocale( ) );
@@ -789,8 +794,7 @@ public class FormXPage extends MVCApplication
         
         if ( currentStep == null )
         {
-        	 FormMessage formMessage = FormMessageHome.findByForm( form.getId( ) );
-	         SiteMessageService.setMessage( request, MESSAGE_ERROR_CONTROL, new Object[] { errorList.stream( ).collect( Collectors.joining( ) ) }, SiteMessage.TYPE_ERROR, getBackUrl( form, formMessage.getEndMessageDisplay( ) ), null );
+        	 SiteMessageService.setMessage( request, MESSAGE_ERROR_CONTROL, new Object[] { errorList.stream( ).collect( Collectors.joining( ) ) }, null, null, null, SiteMessage.TYPE_ERROR, null, getViewFullUrl( VIEW_STEP ) );
 		}
         return redirectView( request, VIEW_STEP );
     }
@@ -1080,6 +1084,7 @@ public class FormXPage extends MVCApplication
         		    	formResponse.setError(genAttError);                     	
                      	
                      	formResponse.setEntryResponse(listResponse);
+                     	break;
         			}
         			
     	        }
@@ -1176,12 +1181,13 @@ public class FormXPage extends MVCApplication
     /**
      * initialize the object.
      */
-    private void init( )
+    private void init( HttpServletRequest request )
     {
         _formResponseManager = null;
         _currentStep = null;
         _stepDisplayTree = null;
         _breadcrumb = null;
+        FormsAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
     }
 
     /**
@@ -1207,4 +1213,5 @@ public class FormXPage extends MVCApplication
     {
         return ( _currentStep == null && _formResponseManager == null && _stepDisplayTree == null && _breadcrumb == null );
     }
+    
 }

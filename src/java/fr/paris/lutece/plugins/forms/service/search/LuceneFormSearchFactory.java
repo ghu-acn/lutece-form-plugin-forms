@@ -34,6 +34,8 @@
 package fr.paris.lutece.plugins.forms.service.search;
 
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -47,6 +49,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NIOFSDirectory;
 
 import fr.paris.lutece.portal.service.util.AppPathService;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -57,11 +60,14 @@ public class LuceneFormSearchFactory
 {
     // Constants
     private static final String PATH_INDEX = "forms.internalIndexer.lucene.indexPath";
+    private static final String PATH_INDEX_IN_WEBAPP = "forms.internalIndexer.lucene.indexInWebapp";
 
     // Variables
     @Inject
     @Named( value = "forms.luceneFrenchAnalizer" )
     private Analyzer _analyzer;
+
+    private IndexWriter _indexWriter;
 
     /**
      * Return the Analyzer to use for the search
@@ -98,32 +104,37 @@ public class LuceneFormSearchFactory
      */
     public IndexWriter getIndexWriter( Boolean bCreateIndex )
     {
-        try
+        if ( _indexWriter == null || !_indexWriter.isOpen( ) )
         {
-            Directory luceneDirectory = getDirectory( );
-
-            if ( !DirectoryReader.indexExists( luceneDirectory ) )
+            try
             {
-                bCreateIndex = Boolean.TRUE;
+                Directory luceneDirectory = getDirectory( );
+    
+                if ( !DirectoryReader.indexExists( luceneDirectory ) )
+                {
+                    bCreateIndex = Boolean.TRUE;
+                }
+    
+                IndexWriterConfig conf = new IndexWriterConfig( getAnalyzer( ) );
+    
+                if ( bCreateIndex )
+                {
+                    conf.setOpenMode( OpenMode.CREATE );
+                }
+                else
+                {
+                    conf.setOpenMode( OpenMode.APPEND );
+                }
+                _indexWriter = new IndexWriter( luceneDirectory, conf );
             }
-
-            IndexWriterConfig conf = new IndexWriterConfig( getAnalyzer( ) );
-
-            if ( bCreateIndex )
+            catch( IOException e )
             {
-                conf.setOpenMode( OpenMode.CREATE );
+                AppLogService.error( "Unable to create a new Lucene Index Writer", e );
+                return null;
             }
-            else
-            {
-                conf.setOpenMode( OpenMode.APPEND );
-            }
-            return new IndexWriter( luceneDirectory, conf );
         }
-        catch( IOException e )
-        {
-            AppLogService.error( "Unable to create a new Lucene Index Writer", e );
-            return null;
-        }
+        return _indexWriter;
+        
     }
 
     /**
@@ -137,6 +148,16 @@ public class LuceneFormSearchFactory
     {
         String strIndex = AppPathService.getPath( PATH_INDEX );
 
+        boolean indexInWebapp = AppPropertiesService.getPropertyBoolean( PATH_INDEX_IN_WEBAPP, true );
+        if ( indexInWebapp )
+        {
+        	strIndex = AppPathService.getPath( PATH_INDEX );
+        }
+        else
+        {
+        	strIndex = AppPropertiesService.getProperty( PATH_INDEX );
+        }
+        
         return NIOFSDirectory.open( Paths.get( strIndex ) );
     }
 }

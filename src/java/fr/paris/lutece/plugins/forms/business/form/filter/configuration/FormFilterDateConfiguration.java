@@ -31,33 +31,15 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.forms.web.form.filter.display.factory.impl;
-
-import fr.paris.lutece.plugins.forms.business.form.filter.FormFilter;
-import fr.paris.lutece.plugins.forms.business.form.filter.configuration.FormFilterDateCreationConfiguration;
-import fr.paris.lutece.plugins.forms.web.form.filter.display.IFormFilterDisplay;
-import fr.paris.lutece.plugins.forms.web.form.filter.display.factory.IFormFilterDisplayFactory;
-import fr.paris.lutece.plugins.forms.web.form.filter.display.impl.FormFilterDisplayFormResponseDateCreation;
+package fr.paris.lutece.plugins.forms.business.form.filter.configuration;
 
 /**
- * Implementation of the IFormFilterDisplayFactory for a Factory on a FormResponseDateCreation filter
+ * Configuration for a FormFilter object
  */
-public class FormFilterDisplayFormResponseDateCreationFactory implements IFormFilterDisplayFactory
+public class FormFilterDateConfiguration extends AbstractFormFilterConfiguration
 {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IFormFilterDisplay buildFilterDisplay( FormFilter formFilter )
+    public FormFilterDateConfiguration( int nPosition, String strFormFilterLabel, String strFormFilterName ) 
     {
-        FormFilterDisplayFormResponseDateCreation formFilterDisplayFormResponseDateCreation = null;
-
-        if ( formFilter.getFormFilterConfiguration( ) instanceof FormFilterDateCreationConfiguration )
-        {
-            formFilterDisplayFormResponseDateCreation = new FormFilterDisplayFormResponseDateCreation( );
-            formFilterDisplayFormResponseDateCreation.setFormFilter( formFilter );
-        }
-
-        return formFilterDisplayFormResponseDateCreation;
+        super( nPosition, strFormFilterLabel, strFormFilterName );
     }
 }

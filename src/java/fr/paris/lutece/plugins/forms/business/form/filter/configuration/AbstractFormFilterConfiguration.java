@@ -36,13 +36,56 @@ package fr.paris.lutece.plugins.forms.business.form.filter.configuration;
 /**
  * Configuration for a FormFilter object
  */
-public class FormFilterFormsConfiguration extends AbstractFormFilterConfiguration
+public class AbstractFormFilterConfiguration implements IFormFilterConfiguration
 {
+    // Variables
+    private final int _nPosition;
+    private final String _strFormFilterLabel;
+    private final String _strFormFilterName;
 
-    public FormFilterFormsConfiguration( int nPosition, String strFormFilterLabel, String strFormFilterName ) 
+    /**
+     * Constructor
+     * 
+     * @param nPosition
+     *            The position of the FormFilter
+     * @param strFormFilterLabel
+     *            The label of the FormFilter
+     */
+    public AbstractFormFilterConfiguration( int nPosition, String strFormFilterLabel, String strFormFilterName )
     {
-        super(nPosition, strFormFilterLabel, strFormFilterName);
+        _nPosition = nPosition;
+        _strFormFilterLabel = strFormFilterLabel;
+        _strFormFilterName = strFormFilterName;
     }
-    
 
+    /**
+     * Return the position of the FormFilter
+     * 
+     * @return the position of the FormFilter
+     */
+    public int getPosition( )
+    {
+        return _nPosition;
+    }
+
+    /**
+     * Return the label of the FormFilter
+     * 
+     * @return the label of the FormFilter
+     */
+    public String getFormFilterLabel( )
+    {
+        return _strFormFilterLabel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFormFilterName() 
+    {
+        return _strFormFilterName;
+    }
+
+    
 }

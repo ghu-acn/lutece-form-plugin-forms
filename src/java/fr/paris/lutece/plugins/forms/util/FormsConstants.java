@@ -124,7 +124,7 @@ public final class FormsConstants
     public static final String PARAMETER_REF_LIST_VALUE = "refListValue";
     public static final String PARAMETER_REF_LIST_FIELD = "refListField";
     public static final String PARAMETER_REF_LIST_MAPPING = "refListMapping";
-
+    
     public static final String PARAMETER_ACTION_GO_TO_STEP = "action_doGoToStep";
     public static final String PARAMETER_INFO_KEY = "info_key";
     public static final String PARAMETER_BACK_URL = "back_url";
@@ -142,6 +142,8 @@ public final class FormsConstants
     public static final String PARAMETER_ACTION_PREFIX = "action_";
     public static final String PARAMETER_MULTIVIEW_GLOBAL = "is_visible_multiview_global";
     public static final String PARAMETER_MULTIVIEW_FORM_SELECTED = "is_visible_multiview_form_selected";
+    public static final String PARAMETER_FILTERABLE_MULTIVIEW_GLOBAL = "is_filterable_multiview_global";
+    public static final String PARAMETER_FILTERABLE_MULTIVIEW_FORM_SELECTED = "is_filterable_multiview_form_selected";
     public static final String PARAMETER_COLUMN_TITLE = "column_title";
     public static final String PARAMETER_VIEW_MODIFY_CONTROL = "view_modifyControl";
     public static final String PARAMETRE_VALIDATOR_LISTQUESTION_NAME = "forms_listQuestionValidator";
@@ -174,7 +176,6 @@ public final class FormsConstants
 
     // Beans
     public static final String BEAN_TRANSACTION_MANAGER = "forms.transactionManager";
-    public static final String BEAN_FORMS_FORM_TITLE_COLUMN = "forms.transactionManager";
     public static final String BEAN_FORMS_COLUMN_TITLE = "forms.forms.column";
     public static final String BEAN_FORMS_COLUMN_DATE_CREATION = "forms.formResponseCreationDate.column";
 
